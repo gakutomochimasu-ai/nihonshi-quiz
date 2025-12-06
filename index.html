@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>日本史クイズ☆ポップ版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Helvetica Neue", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      background: radial-gradient(circle at top left, #fff3e0, #e1f5fe 40%, #f3e5f5);
+    }
+
+    .app-wrapper {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .card {
+      background: #ffffffee;
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      padding: 22px 24px 20px;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #ffeb3b, #f06292);
+      color: #fff;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 14px rgba(240, 98, 146, 0.4);
+    }
+
+    .title-main {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #5c6bc0;
+    }
+
+    .title-sub {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .pill {
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .pill span {
+      font-size: 1rem;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 8px;
+      background: #f1f1f1;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff6f91, #ffca28);
+      transition: width 0.35s ease;
+    }
+
+    .question-number {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ff7043;
+      margin-bottom: 4px;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 14px;
+      border: 1px solid #e0e0e0;
+      padding: 11px 12px;
+      background: #ffffff;
+      font-size: 0.96rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.06);
+      border-color: #ffccbc;
+      background: #fff8e1;
+    }
+
+    .choice-label {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #e3f2fd;
+      color: #1976d2;
+      flex-shrink: 0;
+    }
+
+    .choice-text {
+      flex: 1;
+      word-break: keep-all;
+    }
+
+    .choice-btn.correct {
+      border-color: #66bb6a;
+      background: #e8f5e9;
+    }
+
+    .choice-btn.wrong {
+      border-color: #ef5350;
+      background: #ffebee;
+    }
+
+    .choice-btn:disabled {
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .explanation-box {
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .explanation-box.correct {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      color: #2e7d32;
+    }
+
+    .explanation-box.wrong {
+      background: #ffebee;
+      border: 1px solid #ef9a9a;
+      color: #c62828;
+    }
+
+    .explanation-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .reaction-text {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .score-text {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #ff6f91, #ffca28);
+      color: #fff;
+      box-shadow: 0 5px 12px rgba(255, 111, 145, 0.35);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: #5c6bc0;
+      border: 1px solid #c5cae9;
+    }
+
+    /* スタート画面 & 結果画面 */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .start-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #5c6bc0;
+    }
+
+    .start-text {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .tag-chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f3e5f5;
+      color: #7b1fa2;
+      font-weight: 600;
+    }
+
+    .start-options {
+      margin-top: 8px;
+      margin-bottom: 10px;
+      display: grid;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .start-options label {
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .start-select {
+      margin-top: 4px;
+      width: 100%;
+      max-width: 260px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1c4e9;
+      font-size: 0.9rem;
+      background: #faf5ff;
+    }
+
+    .result-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #5c6bc0;
+    }
+
+    .result-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #ff7043;
+    }
+
+    .result-comment {
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 18px 16px 16px;
+      }
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .title-main {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="card">
+
+      <!-- スタート画面 -->
+      <div id="startScreen" class="screen active">
+        <div class="app-header">
+          <div class="logo-area">
+            <div class="logo-icon">📚</div>
+            <div>
+              <div class="title-main">日本史クイズ☆ポップ</div>
+              <div class="title-sub">高校生向け・基礎〜共通テストレベル</div>
+            </div>
+          </div>
+          <div class="pill">
+            <span>✨</span> 単元＆レベルを選べます
+          </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <div class="start-title">さぁ、日本史で遊ぼう！</div>
+          <p class="start-text">
+            縄文時代から戦後まで、<br>
+            日本史の基礎〜共通テストレベルがポップなクイズになりました。<br>
+            1問ごとに
+            <strong>「正解／不正解」＋ていねいな解説</strong>
+            が出るので、遊びながら復習できます。
+          </p>
+
+          <div class="tag-list">
+            <span class="tag-chip">#縄文〜現代</span>
+            <span class="tag-chip">#共通テストレベル対応</span>
+            <span class="tag-chip">#解説つき</span>
+            <span class="tag-chip">#スマホ対応</span>
+          </div>
+
+          <div class="start-options">
+            <div>
+              <label for="difficultySelect">難易度：</label><br />
+              <select id="difficultySelect" class="start-select">
+                <option value="all">おすすめ（全部まぜる）</option>
+                <option value="basic">基礎〜標準だけ</option>
+                <option value="advanced">共通テストレベルだけ</option>
+              </select>
+            </div>
+            <div>
+              <label for="periodSelect">単元：</label><br />
+              <select id="periodSelect" class="start-select">
+                <option value="all">全範囲（古代〜現代）</option>
+                <option value="古代">古代（縄文〜平安）</option>
+                <option value="中世">中世（鎌倉〜室町）</option>
+                <option value="近世">近世（安土桃山〜江戸）</option>
+                <option value="近代">近代（明治〜昭和前半）</option>
+                <option value="現代">現代（戦後〜）</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="startBtn" class="btn btn-primary" style="margin-top: 4px;">
+            ▶ この条件でクイズをはじめる
+          </button>
+        </div>
+      </div>
+
+      <!-- クイズ画面 -->
+      <div id="quizScreen" class="screen">
+        <div class="app-header">
+          <div class="logo-area">
+            <div class="logo-icon">🏯</div>
+            <div>
+              <div class="title-main">日本史クイズ</div>
+              <div class="title-sub" id="quizSubTitle">1問ずつじっくり＆楽しく</div>
+            </div>
+          </div>
+          <div class="pill">
+            <span>🎮</span> プレイ中
+          </div>
+        </div>
+
+        <div class="progress-row">
+          <div id="progressText"></div>
+          <div id="scoreMiniText"></div>
+        </div>
+
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+
+        <div class="question-number" id="questionNumber"></div>
+        <div class="question-text" id="questionText"></div>
+        <div class="choices" id="choicesContainer"></div>
+
+        <div id="explanationBox" class="explanation-box">
+          <div class="explanation-title" id="explanationTitle"></div>
+          <div id="explanationText"></div>
+          <div class="reaction-text" id="reactionText"></div>
+        </div>
+
+        <div class="footer-row">
+          <div class="score-text" id="scoreText"></div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline" id="backToStartBtn">やめる</button>
+            <button class="btn btn-primary" id="nextBtn" disabled>次の問題 ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 結果画面 -->
+      <div id="resultScreen" class="screen">
+        <div class="app-header">
+          <div class="logo-area">
+            <div class="logo-icon">🎉</div>
+            <div>
+              <div class="title-main">結果発表！</div>
+              <div class="title-sub">おつかれさまでした</div>
+            </div>
+          </div>
+          <div class="pill">
+            <span>📝</span> ふりかえりタイム
+          </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <div class="result-title" id="resultTitleText"></div>
+          <div class="result-score" id="resultScoreText"></div>
+          <div class="result-comment" id="resultCommentText"></div>
+
+          <button class="btn btn-primary" id="restartBtn" style="margin-right:6px;">
+            🔁 同じ条件でもう一度
+          </button>
+          <button class="btn btn-outline" id="resultBackToStartBtn">
+            🏠 条件を変えてやり直す
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ----------------------------------------
+    // 日本史クイズデータ（解説・単元・レベルつき）
+    // period: 古代 / 中世 / 近世 / 近代 / 現代
+    // level:  basic（基礎〜標準） / advanced（共通テスト）
+    // ----------------------------------------
+    const quizData = [
+      // ====== 基礎〜標準レベル ======
+      {
+        question: "縄文時代の人々の代表的な住居はどれですか？",
+        choices: ["竪穴住居", "高床倉庫", "書院造", "寝殿造"],
+        answer: 0,
+        explanation:
+          "縄文時代の人々は、地面を掘り下げて柱を立て、屋根をかけた「竪穴住居」に住んでいました。",
+        period: "古代",
+        level: "basic"
+      },
+      {
+        question: "大化の改新で中心となった人物はだれですか？",
+        choices: ["聖徳太子", "藤原鎌足", "源頼朝", "織田信長"],
+        answer: 1,
+        explanation:
+          "中大兄皇子とともに蘇我氏を倒し、政治改革を進めたのが藤原鎌足です。",
+        period: "古代",
+        level: "basic"
+      },
+      {
+        question: "平安京が造営されたのは現在のどこの都市ですか？",
+        choices: ["東京", "奈良", "京都", "大阪"],
+        answer: 2,
+        explanation:
+          "平安京は現在の京都市を中心とする地域に造営されました（794年・桓武天皇）。",
+        period: "古代",
+        level: "basic"
+      },
+      {
+        question: "源頼朝が開いた幕府の所在地はどこですか？",
+        choices: ["大阪", "鎌倉", "江戸", "京都"],
+        answer: 1,
+        explanation:
+          "1192年に征夷大将軍となった源頼朝は、鎌倉に幕府を開きました。",
+        period: "中世",
+        level: "basic"
+      },
+      {
+        question: "刀狩や検地を行い、全国統一を進めた戦国大名はだれですか？",
+        choices: ["豊臣秀吉", "織田信長", "徳川家康", "上杉謙信"],
+        answer: 0,
+        explanation:
+          "太閤検地や刀狩令などで農民支配を強化し、全国統一を完成させたのは豊臣秀吉です。",
+        period: "近世",
+        level: "basic"
+      },
+      {
+        question: "江戸幕府が参勤交代を制度化した将軍はだれですか？",
+        choices: ["徳川家康", "徳川家光", "徳川綱吉", "徳川吉宗"],
+        answer: 1,
+        explanation:
+          "3代将軍・徳川家光のときに参勤交代が制度として整えられました。",
+        period: "近世",
+        level: "basic"
+      },
+      {
+        question: "「鎖国」によって江戸時代の日本と交易していたヨーロッパの国はどこですか？",
+        choices: ["フランス", "イギリス", "オランダ", "スペイン"],
+        answer: 2,
+        explanation:
+          "長崎の出島を通じて、日本と貿易していたヨーロッパの国はオランダでした。",
+        period: "近世",
+        level: "basic"
+      },
+      {
+        question: "「尊王攘夷」を唱え、のちに倒幕の中心となった藩のひとつはどれですか？",
+        choices: ["佐賀藩", "会津藩", "薩摩藩・長州藩", "津藩"],
+        answer: 2,
+        explanation:
+          "薩摩藩・長州藩は尊王攘夷運動の中心となり、のちに倒幕の主力となりました。",
+        period: "近代",
+        level: "basic"
+      },
+      {
+        question: "明治政府が出した「廃藩置県」は、主に何を目的とした政策ですか？",
+        choices: [
+          "身分制度の廃止",
+          "藩をなくして中央集権国家をつくること",
+          "検地による税収確保",
+          "軍隊の近代化"
+        ],
+        answer: 1,
+        explanation:
+          "廃藩置県は、藩を廃止して県を置き、中央政府による全国統一的な支配を目指した改革です。",
+        period: "近代",
+        level: "basic"
+      },
+      {
+        question: "明治時代に公布された、日本最初の近代的な憲法はどれですか？",
+        choices: ["日本国憲法", "五箇条の御誓文", "大日本帝国憲法", "治安維持法"],
+        answer: 2,
+        explanation:
+          "1889年に公布されたのが大日本帝国憲法で、立憲君主制のもとで議会政治が始まりました。",
+        period: "近代",
+        level: "basic"
+      },
+      {
+        question: "第一次世界大戦後、日本が国際連盟から委任統治を受けたのはどこですか？",
+        choices: ["台湾", "朝鮮", "南洋諸島", "満州"],
+        answer: 2,
+        explanation:
+          "日本はドイツ領だった南洋諸島の委任統治権を国際連盟から与えられました。",
+        period: "近代",
+        level: "basic"
+      },
+      {
+        question: "戦後、日本が制定した現在の憲法はいつ施行されましたか？",
+        choices: ["1945年", "1946年", "1947年", "1950年"],
+        answer: 2,
+        explanation:
+          "日本国憲法は1947年5月3日に施行されました（公布は1946年11月3日）。",
+        period: "現代",
+        level: "basic"
+      },
+      {
+        question: "高度経済成長期に大きく発展したのは、主にどのような産業ですか？",
+        choices: [
+          "農業中心の第一次産業",
+          "重化学工業を中心とする第二次産業",
+          "サービス業中心の第三次産業",
+          "林業・水産業"
+        ],
+        answer: 1,
+        explanation:
+          "鉄鋼・造船・自動車・石油化学などの重化学工業を中心に、日本経済は急成長しました。",
+        period: "現代",
+        level: "basic"
+      },
+      {
+        question: "1970年に大阪で開かれた、日本初の国際博覧会は何と呼ばれますか？",
+        choices: ["愛知万博", "大阪万博（日本万国博覧会）", "東京万博", "神戸万博"],
+        answer: 1,
+        explanation:
+          "1970年に大阪で開催された日本初の本格的な万博は「日本万国博覧会（大阪万博）」です。",
+        period: "現代",
+        level: "basic"
+      },
+      {
+        question: "平和主義を示す、日本国憲法第9条に関係するキーワードはどれですか？",
+        choices: ["戦争の放棄", "象徴天皇制", "基本的人権の尊重", "地方自治"],
+        answer: 0,
+        explanation:
+          "日本国憲法第9条では、戦争と戦力の保持を放棄する「平和主義」がうたわれています。",
+        period: "現代",
+        level: "basic"
+      },
+
+      // ====== 共通テストレベル（やや難） ======
+      {
+        question: "701年に制定された大宝律令の目的として最も適切なものはどれですか？",
+        choices: [
+          "将軍による武家政権の確立",
+          "天皇を中心とした律令国家体制の整備",
+          "武士による地方支配の容認",
+          "欧米列強との不平等条約改正"
+        ],
+        answer: 1,
+        explanation:
+          "大宝律令は、天皇を頂点とする中央集権的な律令国家体制を整えるために制定されました。",
+        period: "古代",
+        level: "advanced"
+      },
+      {
+        question: "藤原道長・頼通の時代に最も栄えた文化はどれですか？",
+        choices: ["飛鳥文化", "天平文化", "国風文化", "鎌倉文化"],
+        answer: 2,
+        explanation:
+          "藤原道長・頼通の全盛期には、かな文字や物語文学が発達した「国風文化」が栄えました。",
+        period: "古代",
+        level: "advanced"
+      },
+      {
+        question: "承久の乱で敗れ、隠岐に流された上皇はだれですか？",
+        choices: ["後白河上皇", "後鳥羽上皇", "後醍醐天皇", "白河上皇"],
+        answer: 1,
+        explanation:
+          "朝廷権力の回復をめざして挙兵した後鳥羽上皇は、承久の乱に敗れ、隠岐に流されました。",
+        period: "中世",
+        level: "advanced"
+      },
+      {
+        question: "元寇の後、御家人の困窮を救うために出された政策として正しいものはどれですか？",
+        choices: [
+          "生類憐みの令",
+          "徳政令",
+          "廃藩置県",
+          "公地公民制"
+        ],
+        answer: 1,
+        explanation:
+          "元寇後の御家人の生活苦を救済するため、幕府は借金の帳消しなどを行う「徳政令」をしばしば出しました。",
+        period: "中世",
+        level: "advanced"
+      },
+      {
+        question: "元禄文化の代表的な俳人として最も適切なのはだれですか？",
+        choices: ["松尾芭蕉", "与謝蕪村", "小林一茶", "井原西鶴"],
+        answer: 0,
+        explanation:
+          "松尾芭蕉は、江戸前期の元禄文化を代表する俳人です。",
+        period: "近世",
+        level: "advanced"
+      },
+      {
+        question: "享保の改革を主導した人物として正しいものはどれですか？",
+        choices: ["徳川家光", "徳川家綱", "徳川綱吉", "徳川吉宗"],
+        answer: 3,
+        explanation:
+          "享保の改革は8代将軍・徳川吉宗が行った幕政改革で、上げ米の制や目安箱の設置などが有名です。",
+        period: "近世",
+        level: "advanced"
+      },
+      {
+        question: "明治維新直後に出された「五箇条の御誓文」の内容として最も適切なものはどれですか？",
+        choices: [
+          "四民平等や華族・士族・平民の身分制度を定めた",
+          "議論を重んじて広く意見を取り入れ、国を開いて列強に追いつく姿勢を示した",
+          "天皇主権に基づく統帥権の独立を定めた",
+          "農民一揆の禁止と年貢増徴を定めた"
+        ],
+        answer: 1,
+        explanation:
+          "五箇条の御誓文は、広く会議を興して世論を尊重し、知識を世界に求めるなど開明的な方針を示しました。",
+        period: "近代",
+        level: "advanced"
+      },
+      {
+        question: "日清戦争の講和条約として正しいものはどれですか？",
+        choices: [
+          "ポーツマス条約",
+          "サンフランシスコ平和条約",
+          "下関条約",
+          "日米和親条約"
+        ],
+        answer: 2,
+        explanation:
+          "1895年、日清戦争の講和条約として結ばれたのが下関条約で、遼東半島・台湾・澎湖諸島の割譲などが盛り込まれました。",
+        period: "近代",
+        level: "advanced"
+      },
+      {
+        question: "日露戦争後、日本がロシアとの間で結んだ講和条約はどれですか？",
+        choices: [
+          "ポーツマス条約",
+          "ワシントン条約",
+          "ロンドン海軍軍縮条約",
+          "サンフランシスコ平和条約"
+        ],
+        answer: 0,
+        explanation:
+          "1905年、日露戦争の講和条約としてアメリカのポーツマスで結ばれたのがポーツマス条約です。",
+        period: "近代",
+        level: "advanced"
+      },
+      {
+        question: "1960年に改定され、大きな反対運動も起きた条約はどれですか？",
+        choices: [
+          "日ソ共同宣言",
+          "日中平和友好条約",
+          "日韓基本条約",
+          "日米安全保障条約"
+        ],
+        answer: 3,
+        explanation:
+          "1960年に改定された日米安全保障条約（新安保条約）をめぐって、大規模な安保闘争が起きました。",
+        period: "現代",
+        level: "advanced"
+      },
+      {
+        question: "高度経済成長期の初期に「所得倍増計画」を打ち出した首相はだれですか？",
+        choices: ["吉田茂", "池田勇人", "佐藤栄作", "田中角栄"],
+        answer: 1,
+        explanation:
+          "池田勇人内閣は1960年に「所得倍増計画」を打ち出し、輸出拡大などを通じて高度経済成長を推進しました。",
+        period: "現代",
+        level: "advanced"
+      }
+    ];
+
+    // ----------------------------------------
+    // 要素取得
+    // ----------------------------------------
+    const startScreen = document.getElementById("startScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+
+    const startBtn = document.getElementById("startBtn");
+    const backToStartBtn = document.getElementById("backToStartBtn");
+    const resultBackToStartBtn = document.getElementById("resultBackToStartBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const difficultySelect = document.getElementById("difficultySelect");
+    const periodSelect = document.getElementById("periodSelect");
+    const quizSubTitleEl = document.getElementById("quizSubTitle");
+
+    const progressTextEl = document.getElementById("progressText");
+    const scoreMiniTextEl = document.getElementById("scoreMiniText");
+    const progressBarEl = document.getElementById("progressBar");
+    const questionNumberEl = document.getElementById("questionNumber");
+    const questionTextEl = document.getElementById("questionText");
+    const choicesContainerEl = document.getElementById("choicesContainer");
+    const explanationBoxEl = document.getElementById("explanationBox");
+    const explanationTitleEl = document.getElementById("explanationTitle");
+    const explanationTextEl = document.getElementById("explanationText");
+    const reactionTextEl = document.getElementById("reactionText");
+    const scoreTextEl = document.getElementById("scoreText");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const resultTitleTextEl = document.getElementById("resultTitleText");
+    const resultScoreTextEl = document.getElementById("resultScoreText");
+    const resultCommentTextEl = document.getElementById("resultCommentText");
+
+    // ----------------------------------------
+    // 状態管理
+    // ----------------------------------------
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let currentQuestions = []; // フィルタ後の問題セット
+
+    const choiceLabels = ["A", "B", "C", "D"];
+
+    // ----------------------------------------
+    // ユーティリティ：配列シャッフル
+    // ----------------------------------------
+    function shuffle(array) {
+      const a = array.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ----------------------------------------
+    // 画面切り替え
+    // ----------------------------------------
+    function showScreen(screenName) {
+      startScreen.classList.remove("active");
+      quizScreen.classList.remove("active");
+      resultScreen.classList.remove("active");
+
+      if (screenName === "start") {
+        startScreen.classList.add("active");
+      } else if (screenName === "quiz") {
+        quizScreen.classList.add("active");
+      } else if (screenName === "result") {
+        resultScreen.classList.add("active");
+      }
+    }
+
+    // ----------------------------------------
+    // 問題セットを条件で絞り込み
+    // ----------------------------------------
+    function buildQuestionSet() {
+      const level = difficultySelect.value; // all / basic / advanced
+      const period = periodSelect.value;    // all / 古代 / 中世 / ...
+
+      let list = quizData.filter((q) => {
+        const levelOk = level === "all" || q.level === level;
+        const periodOk = period === "all" || q.period === period;
+        return levelOk && periodOk;
+      });
+
+      // もし条件が厳しすぎてゼロ件なら、全体から出す
+      if (list.length === 0) {
+        list = quizData.slice();
+      }
+
+      // シャッフルして返す
+      return shuffle(list);
+    }
+
+    // サブタイトルを条件に合わせて表示
+    function updateQuizSubTitle() {
+      const level = difficultySelect.value;
+      const period = periodSelect.value;
+
+      let levelText = "";
+      if (level === "basic") levelText = "基礎〜標準";
+      else if (level === "advanced") levelText = "共通テストレベル";
+      else levelText = "基礎〜共通テストMIX";
+
+      let periodText = "";
+      if (period === "all") periodText = "（古代〜現代）";
+      else periodText = `（${period}）`;
+
+      quizSubTitleEl.textContent = `${levelText}${periodText}モード`;
+    }
+
+    // ----------------------------------------
+    // クイズ初期化
+    // ----------------------------------------
+    function initQuiz() {
+      currentQuestions = buildQuestionSet();
+      currentIndex = 0;
+      score = 0;
+      answered = false;
+      updateQuizSubTitle();
+      renderQuestion();
+    }
+
+    // ----------------------------------------
+    // 問題表示
+    // ----------------------------------------
+    function renderQuestion() {
+      const total = currentQuestions.length;
+      const q = currentQuestions[currentIndex];
+
+      questionNumberEl.textContent = `第 ${currentIndex + 1} 問 / 全 ${total} 問`;
+      questionTextEl.textContent = q.question;
+
+      progressTextEl.textContent = `進行度：${currentIndex + 1} / ${total}`;
+      scoreMiniTextEl.textContent = `今の正解数：${score} 問`;
+
+      const progressPercent = (currentIndex / total) * 100;
+      progressBarEl.style.width = `${progressPercent}%`;
+
+      choicesContainerEl.innerHTML = "";
+      explanationBoxEl.style.display = "none";
+      explanationTitleEl.textContent = "";
+      explanationTextEl.textContent = "";
+      reactionTextEl.textContent = "";
+      nextBtn.disabled = true;
+      answered = false;
+
+      q.choices.forEach((choice, index) => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.dataset.index = index;
+        btn.innerHTML = `
+          <span class="choice-label">${choiceLabels[index] || ""}</span>
+          <span class="choice-text">${choice}</span>
+        `;
+        btn.addEventListener("click", () => handleAnswer(index));
+        choicesContainerEl.appendChild(btn);
+      });
+
+      scoreTextEl.textContent = `正解数：${score} / ${total}`;
+    }
+
+    // ----------------------------------------
+    // 解答処理
+    // ----------------------------------------
+    function handleAnswer(selectedIndex) {
+      if (answered) return;
+      answered = true;
+
+      const q = currentQuestions[currentIndex];
+      const buttons = Array.from(
+        document.querySelectorAll(".choice-btn")
+      );
+
+      buttons.forEach((btn) => {
+        btn.disabled = true;
+        const idx = Number(btn.dataset.index);
+        if (idx === q.answer) {
+          btn.classList.add("correct");
+        }
+      });
+
+      const selectedBtn = buttons.find(
+        (btn) => Number(btn.dataset.index) === selectedIndex
+      );
+
+      if (selectedIndex === q.answer) {
+        score++;
+        explanationBoxEl.classList.remove("wrong");
+        explanationBoxEl.classList.add("correct");
+        explanationTitleEl.innerHTML = "✅ 正解！";
+        reactionTextEl.textContent = getPositiveReaction();
+      } else {
+        if (selectedBtn) {
+          selectedBtn.classList.add("wrong");
+        }
+        explanationBoxEl.classList.remove("correct");
+        explanationBoxEl.classList.add("wrong");
+        explanationTitleEl.innerHTML = `❌ 残念！ 正解は「${q.choices[q.answer]}」`;
+        reactionTextEl.textContent = getEncouragingReaction();
+      }
+
+      explanationTextEl.textContent = q.explanation;
+      explanationBoxEl.style.display = "block";
+
+      nextBtn.disabled = false;
+
+      const total = currentQuestions.length;
+      scoreTextEl.textContent = `正解数：${score} / ${total}`;
+      scoreMiniTextEl.textContent = `今の正解数：${score} 問`;
+
+      const progressPercent = ((currentIndex + 1) / total) * 100;
+      progressBarEl.style.width = `${progressPercent}%`;
+    }
+
+    // ポジティブリアクション（正解時）
+    function getPositiveReaction() {
+      const patterns = [
+        "いい調子！このままいこう ✨",
+        "お見事！日本史マスターの気配…！",
+        "完璧！教科書レベルはバッチリだね 👍",
+        "ナイス！次の問題もいってみよう！",
+        "素晴らしい！集中できてるね 👏"
+      ];
+      return patterns[Math.floor(Math.random() * patterns.length)];
+    }
+
+    // 励ましリアクション（不正解時）
+    function getEncouragingReaction() {
+      const patterns = [
+        "大丈夫！解説を読めば次は解けるはず 🔁",
+        "おしい！ここはよく出るポイントだから覚えよう 👀",
+        "気にしない！間違えたところが伸びしろ ✨",
+        "ふむふむ、このタイミングで覚えられてラッキーかも！",
+        "次で取り返そう！ファイト 💪"
+      ];
+      return patterns[Math.floor(Math.random() * patterns.length)];
+    }
+
+    // ----------------------------------------
+    // 結果表示
+    // ----------------------------------------
+    function showResult() {
+      const total = currentQuestions.length;
+      const percentage = Math.round((score / total) * 100);
+
+      let title = "";
+      let comment = "";
+
+      if (percentage >= 90) {
+        title = "神レベル日本史マスター！👑";
+        comment =
+          "正答率90％以上！高校日本史の基礎はほぼ完璧。共通テストも視野に入ってきます。";
+      } else if (percentage >= 70) {
+        title = "かなりいい感じです！✨";
+        comment =
+          "正答率70％以上。基本はしっかり身についています。あと少し復習すればテストも安心。";
+      } else if (percentage >= 50) {
+        title = "まずまずのスタート！👍";
+        comment =
+          "正答率50％台。解説を読みながら、間違えたところを復習すると一気に伸びそうです。";
+      } else {
+        title = "ここから一緒に伸ばそう！📖";
+        comment =
+          "まだこれから伸びしろだらけ。何度かやり直すと用語や流れがしっかり頭に入ってきます。";
+      }
+
+      resultTitleTextEl.textContent = title;
+      resultScoreTextEl.textContent = `スコア：${score} / ${total} 問（正答率：${percentage}%）`;
+      resultCommentTextEl.textContent = comment;
+
+      showScreen("result");
+    }
+
+    // ----------------------------------------
+    // イベント設定
+    // ----------------------------------------
+    startBtn.addEventListener("click", () => {
+      showScreen("quiz");
+      initQuiz();
+    });
+
+    backToStartBtn.addEventListener("click", () => {
+      showScreen("start");
+    });
+
+    resultBackToStartBtn.addEventListener("click", () => {
+      showScreen("start");
+    });
+
+    restartBtn.addEventListener("click", () => {
+      showScreen("quiz");
+      initQuiz();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    });
+  </script>
+</body>
+</html>
